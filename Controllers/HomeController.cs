@@ -30,8 +30,6 @@ namespace WebApiExtension.Controllers
                     HttpResponseMessage response = await client.GetAsync(uri);
                     response.EnsureSuccessStatusCode();
                     string responseBody = await response.Content.ReadAsStringAsync();
-
-
                     string[] dataArray = responseBody.Split('\n');
 
                     if (query == "/")
@@ -52,7 +50,6 @@ namespace WebApiExtension.Controllers
                     }
 
                     List<string> filteredArray = dataArray.Where(item => item.StartsWith(query)).ToList();
-
                     StemServiceResult result = new StemServiceResult {  Data = filteredArray};
 
                     var json1 = JsonSerializer.Serialize(result);
