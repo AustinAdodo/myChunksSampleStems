@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "hSZA61EgTq+0zrEQjfGaQ/Raz2BgHiBSdocoyDjhUIg=",
+  "Source": "WebApiExtension",
+  "BasePath": "_content/WebApiExtension",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
