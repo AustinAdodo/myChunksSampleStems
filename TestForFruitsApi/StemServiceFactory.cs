@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
+//using Microsoft.VisualStudio.TestPlatform.TestHost;
 using WebApiExtension;
 using System.Text.Json;
 
