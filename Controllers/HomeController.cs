@@ -10,11 +10,14 @@ namespace WebApiExtension.Controllers
     public class HomeController : Controller
     {
         private const string uri = "https://raw.githubusercontent.com/qualified/challenge-data/master/words_alpha.txt";
-        public HomeController()
-        {
+        public HomeController(){}
 
-        }
-
+        /// <summary>
+        /// Produces a stem service result.
+        /// </summary>
+        /// <param name="stem"></param>
+        /// <returns></returns>
+        
         [HttpGet]
         [ProducesResponseType(type: typeof(StemServiceResult), statusCode: StatusCodes.Status200OK)]
         [ProducesResponseType(statusCode: StatusCodes.Status404NotFound)]
