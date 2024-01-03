@@ -1,10 +1,25 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Text.Json;
 
 
 namespace WebApiExtension.Controllers
 {
+    public class TVSeries
+    {
+        public string name { get; set; }
+        public string runtime_of_series { get; set; }
+        public string runtime_of_episodes { get; set; }
+        public string genre { get; set; }
+        public float imdb_rating { get; set; }
+        public string overview { get; set; }
+        public int no_of_votes { get; set; }
+        public int id { get; set; }
+    }
+
+
+
     [Route("/")]
     [ApiController]
     public class HomeController : Controller
@@ -103,8 +118,50 @@ namespace WebApiExtension.Controllers
             }
         }
 
+        public static async Task<string> BestIngenre(string genre, int num)
+        {
+            string uri = $"https://jonmock.hackerrank.com/api/tvseries?page={num}";
+
+            using (HttpClient client = new HttpClient())
+            {
+                HttpResponseMessage response = await client.GetAsync(uri);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseBody = await response.Content.ReadAsStringAsync();
+
+                    // Deserialize the JSON response to a collection of TVSeries objects
+                    var jsonData = JsonConvert.DeserializeObject<TVSeries[]>(responseBody);
+
+                    // Filter TV series by genre
+                    var seriesInGenre = jsonData.Where(series => series.genre.Contains(genre));
+
+                    // Find the series with the highest IMDb rating
+                    var highestRatedSeries = seriesInGenre.OrderByDescending(series => series.imdb_rating)
+                        .ThenBy(series => series.name)
+                        .FirstOrDefault();
+
+                    if (highestRatedSeries != null)
+                    {
+                        string seriesName = highestRatedSeries.name;
+                        string seriesRating = highestRatedSeries.imdb_rating.ToString();
+
+                        return $"{seriesName} has the highest IMDb rating ({seriesRating}) in the genre '{genre}'.";
+                    }
+                    else
+                    {
+                        return $"No TV series found in the genre '{genre}' on page {num}.";
+                    }
+                }
+                else
+                {
+                    return $"Failed to retrieve TV series data from the API on page {num}.";
+                }
+            }
+        }
     }
 }
+
 
 
 
