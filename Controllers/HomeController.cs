@@ -93,6 +93,7 @@ namespace WebApiExtension.Controllers
                     string responseBody = await response.Content.ReadAsStringAsync();
 
                     // Deserialize the JSON response to dynamic object
+                    // use other library outsid newtonsoft
                     dynamic jsonData = Newtonsoft.Json.JsonConvert.DeserializeObject(responseBody);
 
                     if (jsonData.data.Count == 0)
