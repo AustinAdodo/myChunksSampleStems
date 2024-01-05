@@ -80,6 +80,11 @@ namespace WebApiExtension.Controllers
             }
         }
 
+        /// <summary>
+        /// Produces a stem service result.
+        /// </summary>
+        /// <param name="stem"></param>
+        /// <returns></returns>
         public static async Task<string> BestIngenre(string country, string phoneNumber)
         {
             string uri = $"https://jonmock.hackerrank.com/api/countries?name={country}";
@@ -119,6 +124,11 @@ namespace WebApiExtension.Controllers
             }
         }
 
+        /// <summary>
+        /// Produces a stem service result.
+        /// </summary>
+        /// <param name="stem"></param>
+        /// <returns></returns>
         public static async Task<string> BestIngenre(string genre, int num)
         {
             string uri = $"https://jonmock.hackerrank.com/api/tvseries?page={num}";
