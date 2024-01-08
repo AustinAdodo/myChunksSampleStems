@@ -170,6 +170,12 @@ namespace WebApiExtension.Controllers
                 }
             }
         }
+
+        /// <summary>
+        /// Produces a stem service result.
+        /// </summary>
+        /// <param name="stem"></param>
+        /// <returns></returns>
     }
 }
 
