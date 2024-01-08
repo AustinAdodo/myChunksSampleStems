@@ -85,7 +85,7 @@ namespace WebApiExtension.Controllers
         /// </summary>
         /// <param name="stem"></param>
         /// <returns></returns>
-        public static async Task<string> BestIngenre(string country, string phoneNumber)
+        public async Task<string> getPhoneNumbers(string country, string phoneNumber)
         {
             string uri = $"https://jonmock.hackerrank.com/api/countries?name={country}";
 
