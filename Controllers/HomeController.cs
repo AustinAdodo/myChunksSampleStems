@@ -81,7 +81,7 @@ namespace WebApiExtension.Controllers
         }
 
         /// <summary>
-        /// Produces a stem service result.
+        /// Getting Phone Numbers.
         /// </summary>
         /// <param name="stem"></param>
         /// <returns></returns>
@@ -125,7 +125,7 @@ namespace WebApiExtension.Controllers
         }
 
         /// <summary>
-        /// Produces a stem service result.
+        /// Filters genre from an API.
         /// </summary>
         /// <param name="stem"></param>
         /// <returns></returns>
@@ -142,7 +142,7 @@ namespace WebApiExtension.Controllers
                     string responseBody = await response.Content.ReadAsStringAsync();
 
                     // Deserialize the JSON response to a collection of TVSeries objects
-                    var jsonData = JsonConvert.DeserializeObject<TVSeries[]>(responseBody);
+                    var jsonData = Newtonsoft.Json.JsonConvert.DeserializeObject<TVSeries[]>(responseBody);
 
                     // Filter TV series by genre
                     var seriesInGenre = jsonData.Where(series => series.genre.Contains(genre));
@@ -172,10 +172,230 @@ namespace WebApiExtension.Controllers
         }
 
         /// <summary>
-        /// Produces a stem service result.
+        /// Retrieves calling codes from provided Phone numbers.
         /// </summary>
         /// <param name="stem"></param>
         /// <returns></returns>
+        public class CountryResponse
+        {
+            public string name { get; set; }
+            public string[] callingCodes { get; set; }
+        }
+        public class CountryData
+        {
+            public CountryResponse[] data { get; set; }
+        }
+        public static string GetPhoneNumbers(string country, string phoneNumber)
+        {
+            string uri = $"https://jsonmock.hackerrank.com/api/countries?name={country}";
+
+            using (HttpClient client = new HttpClient())
+            {
+                HttpResponseMessage response = client.GetAsync(uri).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string jsonContent = response.Content.ReadAsStringAsync().Result;
+
+                    CountryData countryData = Newtonsoft.Json.JsonConvert.DeserializeObject<CountryData>(jsonContent);
+
+                    if (countryData.data.Length == 0 || countryData.data[0].callingCodes.Length == 0)
+                    {
+                        return "-1"; // Country not found or no calling codes available
+                    }
+                    else
+                    {
+                        string callingCode = countryData.data[0].callingCodes[^1]; // Get the code at the highest index
+                        string formattedPhoneNumber = $"+{callingCode} {phoneNumber}";
+                        return formattedPhoneNumber;
+                    }
+                }
+                else
+                {
+                    return "-1"; // Failed API request
+                }
+            }
+        }
+
+        /// <summary>
+        /// Retrieves data of some Universities.
+        /// </summary>
+        /// <param name="stem"></param>
+        /// <returns></returns>
+        public class Location
+        {
+            public string city { get; set; }
+            public string region { get; set; }
+            public string country { get; set; }
+        }
+        public class UniversityData
+        {
+            public string university { get; set; }
+            public string International_students { get; set; }
+            public Location location { get; set; }
+        }
+        public class UniversityResponse
+        {
+            public int page { get; set; }
+            public int per_page { get; set; }
+            public int total { get; set; }
+            public int total_pages { get; set; }
+            public UniversityData[] data { get; set; }
+        }
+        public static async Task<string> highestInternationalStudents(string firstCity, string secondCity)
+        {
+            string uri = "https://jsonmock.hackerrank.com/api/universities";
+
+            string firstCityUniversity = await GetUniversityWithMostInternationalStudents(uri, firstCity);
+            if (!string.IsNullOrEmpty(firstCityUniversity))
+            {
+                return firstCityUniversity;
+            }
+
+            string secondCityUniversity = await GetUniversityWithMostInternationalStudents(uri, secondCity);
+            return secondCityUniversity;
+        }
+
+        public static async Task<string> GetUniversityWithMostInternationalStudents(string uri, string city)
+        {
+            string apiUrl = $"{uri}?page=1";
+            using (HttpClient client = new HttpClient())
+            {
+                while (!string.IsNullOrEmpty(apiUrl))
+                {
+                    HttpResponseMessage response = await client.GetAsync(apiUrl);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string jsonContent = await response.Content.ReadAsStringAsync();
+                        UniversityResponse universityData = Newtonsoft.Json.JsonConvert.DeserializeObject<UniversityResponse>(jsonContent);
+
+                        foreach (var university in universityData.data)
+                        {
+                            if (university.location.city == city)
+                            {
+                                return GetUniversityNameWithHighestInternationalStudents(universityData.data);
+                            }
+                        }
+                        apiUrl = GetNextPageUrl(response);
+                    }
+                    else
+                    {
+                        throw new HttpRequestException($"Failed to fetch data. StatusCode: {response.StatusCode}");
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        public static string GetUniversityNameWithHighestInternationalStudents(UniversityData[] universities)
+        {
+            UniversityData universityWithMaxStudents = null;
+            int maxStudents = 0;
+
+            foreach (var university in universities)
+            {
+                if (int.TryParse(university.International_students.Replace(",", ""), out int currentStudents))
+                {
+                    if (currentStudents > maxStudents)
+                    {
+                        maxStudents = currentStudents;
+                        universityWithMaxStudents = university;
+                    }
+                }
+            }
+            return universityWithMaxStudents?.university;
+        }
+
+        public static string GetNextPageUrl(HttpResponseMessage response)
+        {
+            string linkHeader = response.Headers.GetValues("Link").FirstOrDefault();
+            if (!string.IsNullOrEmpty(linkHeader))
+            {
+                string[] links = linkHeader.Split(',');
+                foreach (string link in links)
+                {
+                    string[] parts = link.Split(';');
+                    if (parts.Length == 2 && parts[1].Trim() == "rel=\"next\"")
+                    {
+                        return parts[0].Trim('<', '>');
+                    }
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Retrieves data of some Universities.
+        /// </summary>
+        /// <param name="stem"></param>
+        /// <returns></returns>
+        public class UserData
+        {
+            public string username { get; set; }
+            public int submission_count { get; set; }
+        }
+        public class UserResponse
+        {
+            public int page { get; set; }
+            public int per_page { get; set; }
+            public int total { get; set; }
+            public int total_pages { get; set; }
+            public UserData[] data { get; set; }
+        }
+
+        public static async Task<List<string>> GetUsernames(int threshold)
+        {
+            string uri = $"https://jsonmock.hackerrank.com/api/article_users?page=1";
+            List<string> activeUsernames = new List<string>();
+
+            using (HttpClient client = new HttpClient())
+            {
+                while (!string.IsNullOrEmpty(uri))
+                {
+                    HttpResponseMessage response = await client.GetAsync(uri);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string jsonContent = await response.Content.ReadAsStringAsync();
+                        UserResponse userResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<UserResponse>(jsonContent);
+
+                        foreach (var userData in userResponse.data)
+                        {
+                            if (userData.submission_count > threshold)
+                            {
+                                activeUsernames.Add(userData.username);
+                            }
+                        }
+                        uri = GetNextPageUrl1(response);
+                    }
+                    else
+                    {
+                        throw new HttpRequestException($"Failed to fetch data. StatusCode: {response.StatusCode}");
+                    }
+                }
+            }
+            return activeUsernames;
+        }
+        public static string GetNextPageUrl1(HttpResponseMessage response)
+        {
+            string linkHeader = response.Headers.GetValues("Link").FirstOrDefault();
+            if (!string.IsNullOrEmpty(linkHeader))
+            {
+                string[] links = linkHeader.Split(',');
+                foreach (string link in links)
+                {
+                    string[] parts = link.Split(';');
+                    if (parts.Length == 2 && parts[1].Trim() == "rel=\"next\"")
+                    {
+                        return parts[0].Trim('<', '>');
+                    }
+                }
+            }
+            return null;
+        }
+
     }
 }
 
