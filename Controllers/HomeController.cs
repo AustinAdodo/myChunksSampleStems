@@ -6,62 +6,6 @@ using System.Text.Json;
 
 namespace WebApiExtension.Controllers
 {
-    public class TVSeries
-    {
-        public string name { get; set; }
-        public string runtime_of_series { get; set; }
-        public string runtime_of_episodes { get; set; }
-        public string genre { get; set; }
-        public float imdb_rating { get; set; }
-        public string overview { get; set; }
-        public int no_of_votes { get; set; }
-        public int id { get; set; }
-    }
-    public class UserData
-    {
-        public string username { get; set; }
-        public int submission_count { get; set; }
-    }
-    public class UserResponse
-    {
-        public int page { get; set; }
-        public int per_page { get; set; }
-        public int total { get; set; }
-        public int total_pages { get; set; }
-        public UserData[] data { get; set; }
-    }
-    public class Location
-    {
-        public string city { get; set; }
-        public string region { get; set; }
-        public string country { get; set; }
-    }
-    public class UniversityData
-    {
-        public string university { get; set; }
-        public string International_students { get; set; }
-        public Location location { get; set; }
-    }
-    public class UniversityResponse
-    {
-        public int page { get; set; }
-        public int per_page { get; set; }
-        public int total { get; set; }
-        public int total_pages { get; set; }
-        public UniversityData[] data { get; set; }
-    }
-    public class CountryResponse
-    {
-        public string name { get; set; }
-        public string[] callingCodes { get; set; }
-    }
-    public class CountryData
-    {
-        public CountryResponse[] data { get; set; }
-    }
-
-
-
     [Route("/")]
     [ApiController]
     public class HomeController : Controller
@@ -258,13 +202,11 @@ namespace WebApiExtension.Controllers
         public static async Task<string> highestInternationalStudents(string firstCity, string secondCity)
         {
             string uri = "https://jsonmock.hackerrank.com/api/universities";
-
             string firstCityUniversity = await GetUniversityWithMostInternationalStudents(uri, firstCity);
             if (!string.IsNullOrEmpty(firstCityUniversity))
             {
                 return firstCityUniversity;
             }
-
             string secondCityUniversity = await GetUniversityWithMostInternationalStudents(uri, secondCity);
             return secondCityUniversity;
         }
