@@ -17,6 +17,48 @@ namespace WebApiExtension.Controllers
         public int no_of_votes { get; set; }
         public int id { get; set; }
     }
+    public class UserData
+    {
+        public string username { get; set; }
+        public int submission_count { get; set; }
+    }
+    public class UserResponse
+    {
+        public int page { get; set; }
+        public int per_page { get; set; }
+        public int total { get; set; }
+        public int total_pages { get; set; }
+        public UserData[] data { get; set; }
+    }
+    public class Location
+    {
+        public string city { get; set; }
+        public string region { get; set; }
+        public string country { get; set; }
+    }
+    public class UniversityData
+    {
+        public string university { get; set; }
+        public string International_students { get; set; }
+        public Location location { get; set; }
+    }
+    public class UniversityResponse
+    {
+        public int page { get; set; }
+        public int per_page { get; set; }
+        public int total { get; set; }
+        public int total_pages { get; set; }
+        public UniversityData[] data { get; set; }
+    }
+    public class CountryResponse
+    {
+        public string name { get; set; }
+        public string[] callingCodes { get; set; }
+    }
+    public class CountryData
+    {
+        public CountryResponse[] data { get; set; }
+    }
 
 
 
@@ -176,15 +218,6 @@ namespace WebApiExtension.Controllers
         /// </summary>
         /// <param name="stem"></param>
         /// <returns></returns>
-        public class CountryResponse
-        {
-            public string name { get; set; }
-            public string[] callingCodes { get; set; }
-        }
-        public class CountryData
-        {
-            public CountryResponse[] data { get; set; }
-        }
         public static string GetPhoneNumbers(string country, string phoneNumber)
         {
             string uri = $"https://jsonmock.hackerrank.com/api/countries?name={country}";
@@ -222,26 +255,6 @@ namespace WebApiExtension.Controllers
         /// </summary>
         /// <param name="stem"></param>
         /// <returns></returns>
-        public class Location
-        {
-            public string city { get; set; }
-            public string region { get; set; }
-            public string country { get; set; }
-        }
-        public class UniversityData
-        {
-            public string university { get; set; }
-            public string International_students { get; set; }
-            public Location location { get; set; }
-        }
-        public class UniversityResponse
-        {
-            public int page { get; set; }
-            public int per_page { get; set; }
-            public int total { get; set; }
-            public int total_pages { get; set; }
-            public UniversityData[] data { get; set; }
-        }
         public static async Task<string> highestInternationalStudents(string firstCity, string secondCity)
         {
             string uri = "https://jsonmock.hackerrank.com/api/universities";
@@ -327,24 +340,10 @@ namespace WebApiExtension.Controllers
         }
 
         /// <summary>
-        /// Retrieves data of some Universities.
+        /// Retrieves usernames of active users depending on a threshold.
         /// </summary>
         /// <param name="stem"></param>
         /// <returns></returns>
-        public class UserData
-        {
-            public string username { get; set; }
-            public int submission_count { get; set; }
-        }
-        public class UserResponse
-        {
-            public int page { get; set; }
-            public int per_page { get; set; }
-            public int total { get; set; }
-            public int total_pages { get; set; }
-            public UserData[] data { get; set; }
-        }
-
         public static async Task<List<string>> GetUsernames(int threshold)
         {
             string uri = $"https://jsonmock.hackerrank.com/api/article_users?page=1";
