@@ -1,6 +1,6 @@
 ﻿//using Newtonsoft.Json;
 
-namespace WebApiExtension.Controllers
+namespace WebApiExtension
 {
     public class UniversityData
     {

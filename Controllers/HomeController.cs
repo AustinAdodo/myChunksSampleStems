@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 //using Newtonsoft.Json;
 using System.Text.Json;
 
-
 namespace WebApiExtension.Controllers
 {
     [Route("/")]
@@ -210,7 +209,6 @@ namespace WebApiExtension.Controllers
             string secondCityUniversity = await GetUniversityWithMostInternationalStudents(uri, secondCity);
             return secondCityUniversity;
         }
-
         public static async Task<string> GetUniversityWithMostInternationalStudents(string uri, string city)
         {
             string apiUrl = $"{uri}?page=1";
@@ -243,7 +241,6 @@ namespace WebApiExtension.Controllers
 
             return null;
         }
-
         public static string GetUniversityNameWithHighestInternationalStudents(UniversityData[] universities)
         {
             UniversityData universityWithMaxStudents = null;
@@ -262,7 +259,6 @@ namespace WebApiExtension.Controllers
             }
             return universityWithMaxStudents?.university;
         }
-
         public static string GetNextPageUrl(HttpResponseMessage response)
         {
             string linkHeader = response.Headers.GetValues("Link").FirstOrDefault();
@@ -336,7 +332,6 @@ namespace WebApiExtension.Controllers
             }
             return null;
         }
-
     }
 }
 

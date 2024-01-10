@@ -1,11 +1,12 @@
 ﻿//using Newtonsoft.Json;
 
-namespace WebApiExtension.Controllers
+namespace WebApiExtension
 {
-    public class UserData
+    public class Location
     {
-        public string username { get; set; }
-        public int submission_count { get; set; }
+        public string city { get; set; }
+        public string region { get; set; }
+        public string country { get; set; }
     }
 }
 
